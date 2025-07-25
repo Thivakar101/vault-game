@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Vault Heist</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bungee&family=Audiowide&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen">
+        <div class="start-container">
+            <h1 class="game-title">ROB A BANK</h1>
+            <button id="startBtn" class="start-btn">START GAME</button>
+        </div>
+    </div>
+
+    <!-- Video Screen -->
+    <div id="videoScreen" class="screen hidden">
+        <div class="video-container">
+            <video id="introVideo" autoplay playsinline>
+                <source src="intro-video.mp4" type="video/mp4">
+                <source src="intro-video.webm" type="video/webm">
+                Your browser does not support the video tag.
+            </video>
+            <button id="skipVideoBtn" class="skip-video-btn">SKIP VIDEO</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen hidden">
+        <div class="game-container">
+            <div class="hud">
+                <div class="attempts">
+                    Attempts Left: <span id="attemptsLeft">2</span>
+                </div>
+                <div class="word-display">
+                    Target Word: <span id="currentWord">?????</span>
+                </div>
+            </div>
+
+            <div class="vault-area">
+                <div id="vault" class="vault">
+                    <div class="vault-door">
+                        <div class="vault-handle"></div>
+                        <div class="vault-display">
+                            <div id="wordInput" class="word-input"></div>
+                        </div>
+                    </div>
+                </div>
+                <button id="soundBtn" class="sound-btn">🔊</button>
+            </div>
+
+            <div class="keyboard-container">
+                <div id="keyboard" class="keyboard"></div>
+                <div class="button-row">
+                    <button id="submitBtn" class="submit-btn">CRACK VAULT</button>
+                    <button id="clearBtn" class="clear-btn">CLEAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="successScreen" class="screen hidden">
+        <div class="start-container">
+            <img src="success-image.png" alt="Vault Cracked" class="success-image">
+            <h1 class="game-title">VAULT CRACKED!</h1>
+            <button id="playAgainBtn" class="start-btn">HEIST AGAIN</button>
+        </div>
+    </div>
+
+    <!-- Failure Screen -->
+    <div id="failureScreen" class="screen hidden">
+        <div class="start-container">
+            <img src="failure-image.png" alt="Caught" class="failure-image">
+            <h1 class="game-title">CAUGHT!</h1>
+            <button id="tryAgainBtn" class="start-btn">TRY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

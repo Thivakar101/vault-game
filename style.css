@@ -1,0 +1,1152 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Bangers', cursive;
+    background-color: #3498db;
+    color: #fff;
+    overflow: hidden;
+    -webkit-text-size-adjust: 100%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Start Screen */
+.start-container {
+    text-align: center;
+    background: #f1c40f;
+    padding: 50px;
+    border-radius: 20px;
+    border: 5px solid #f39c12;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.game-title {
+    font-family: 'Bangers', cursive;
+    font-size: 5rem;
+    color: #e67e22;
+    text-shadow: 
+        -3px -3px 0 #fff,  
+         3px -3px 0 #fff,
+        -3px  3px 0 #fff,
+         3px  3px 0 #fff,
+        -3px -3px 2px #000,
+         3px -3px 2px #000,
+        -3px  3px 2px #000,
+         3px  3px 2px #000;
+    margin-bottom: 40px;
+}
+
+.failure-image {
+    max-width: 300px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    border-radius: 15px;
+    border: 3px solid #c0392b;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+    object-fit: contain;
+}
+
+.success-image {
+    max-width: 300px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    border-radius: 15px;
+    border: 3px solid #27ae60;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+    object-fit: contain;
+}
+
+.start-btn {
+    background: #e74c3c;
+    border: 3px solid #c0392b;
+    color: white;
+    padding: 15px 30px;
+    font-size: 2rem;
+    font-family: 'Bangers', cursive;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.start-btn:hover {
+    background: #c0392b;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+}
+
+.start-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+}
+
+/* Video Screen */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#introVideo {
+    max-width: 95%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    object-fit: contain;
+    z-index: 1;
+}
+
+.video-overlay {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px 40px;
+    border-radius: 15px;
+    border: 2px solid #f1c40f;
+}
+
+.skip-video-btn {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: #e74c3c;
+    border: 3px solid #c0392b;
+    color: white;
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    font-family: 'Bangers', cursive;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    z-index: 3;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.skip-video-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 15px rgba(0,0,0,0.4);
+}
+
+.skip-video-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+}
+
+.video-text {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: #f1c40f;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.loading-bar {
+    width: 300px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.loading-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #f1c40f, #e67e22);
+    border-radius: 4px;
+    animation: loadingAnimation 3s ease-in-out infinite;
+}
+
+@keyframes loadingAnimation {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Game Screen */
+.game-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    background: linear-gradient(to bottom, #87CEEB, #98D8E8);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.hud {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+.vault-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+}
+
+#gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.vault-display {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 15px;
+    border: 3px solid #00ff00;
+    box-shadow: 0 0 20px #00ff00;
+}
+
+.word-input {
+    display: flex;
+    gap: 10px;
+}
+
+.letter-slot {
+    width: 50px;
+    height: 60px;
+    background: #222;
+    border: 2px solid #444;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+.sound-btn {
+    position: absolute;
+    top: 90px;
+    right: 20px;
+    z-index: 20;
+    background: #e74c3c;
+    border: 3px solid #c0392b;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+.keyboard-container {
+    padding: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    z-index: 20;
+    width: 100%;
+    max-width: 600px;
+    margin-top: auto;
+    margin-bottom: 0;
+}
+
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.submit-btn, .clear-btn {
+    width: 48%;
+    padding: 15px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    color: white;
+    font-family: 'Bangers', cursive;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+    display: block !important;
+    visibility: visible !important;
+}
+
+.submit-btn { 
+    background: #2ecc71 !important; 
+    border: 2px solid #27ae60 !important; 
+}
+
+.submit-btn:hover {
+    background: #27ae60 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+}
+
+.clear-btn { 
+    background: #e74c3c !important; 
+    border: 2px solid #c0392b !important; 
+}
+
+.clear-btn:hover {
+    background: #c0392b !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+}
+
+.key {
+    background: #87CEEB;
+    border: 2px solid #5DADE2;
+    color: #2C3E50;
+    font-size: 1.5rem;
+    padding: 15px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.key.correct { background: #27ae60; border-color: #2ecc71; }
+.key.wrong-position { background: #f39c12; border-color: #f1c40f; }
+.key.incorrect { background: #c0392b; border-color: #e74c3c; }
+
+.submit-btn, .clear-btn {
+    width: 48%;
+    padding: 15px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    color: white;
+    font-family: 'Bangers', cursive;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.submit-btn { 
+    background: #2ecc71; 
+    border: 2px solid #27ae60; 
+}
+
+.submit-btn:hover {
+    background: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+}
+
+.clear-btn { 
+    background: #e74c3c; 
+    border: 2px solid #c0392b; 
+}
+
+.clear-btn:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+}
+
+/* Result Screens */
+.result-container {
+    text-align: center;
+    background: rgba(0,0,0,0.7);
+    padding: 40px;
+    border-radius: 20px;
+}
+
+.result-title {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.success-animation, .failure-animation {
+    font-size: 3rem;
+    margin: 20px 0;
+}
+
+.play-again-btn, .try-again-btn {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    font-family: 'Audiowide', 'Orbitron', cursive;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-shadow: 2px 2px 4px #000;
+    letter-spacing: 1px;
+}
+
+.start-btn:hover, .play-again-btn:hover, .try-again-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Game Screen */
+.game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: transparent; /* Make transparent to show 3D vault */
+}
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-bottom: 2px solid #ffd700;
+    position: relative;
+    z-index: 10; /* Ensure HUD is above 3D scene */
+}
+
+.attempts, .word-display {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.vault-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    padding: 10px 20px 20px 20px; /* Reduced top padding */
+    min-height: 60vh;
+    gap: 30px; /* Increased gap to push input display higher */
+}
+
+.vault {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.vault-door {
+    width: 400px; /* Increased to match 3D vault better */
+    height: 350px; /* Increased to match 3D vault better */
+    background: transparent;
+    border-radius: 0; /* Remove circular shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: none;
+}
+
+.vault-handle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: transparent; /* Hide CSS handle */
+    border-radius: 50%;
+    top: -3px;
+    right: -3px;
+    box-shadow: none; /* Remove shadows */
+}
+
+.vault-display {
+    width: 360px; /* Match the vault door width better */
+    height: 65px; 
+    background: rgba(0, 0, 0, 0.95);
+    border: 3px solid #00ff00;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #00ff00;
+    text-shadow: 0 0 15px #00ff00;
+    position: fixed; /* Changed to fixed for precise positioning */
+    top: 70px; /* Position right below the HUD bar */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20; /* Even higher z-index */
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+}
+
+.word-input {
+    display: flex;
+    gap: 10px; /* Increased gap for better spacing in wider display */
+}
+
+.letter-slot {
+    width: 38px; /* Slightly wider for the larger display */
+    height: 40px; 
+    border: 2px solid #00ff00;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00ff00;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 5px;
+    text-shadow: 0 0 8px #00ff00;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.2);
+}
+
+.sound-btn {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    font-family: 'Audiowide', 'Orbitron', cursive;
+    font-size: 0.6rem;
+    font-weight: 700;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px #000;
+    letter-spacing: 1px;
+    position: absolute;
+    top: 75%; /* Positioned below the vault display */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; /* Higher z-index */
+}
+
+.sound-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+}
+
+.keyboard-container {
+    padding: 15px; /* Reduced padding */
+    background: rgba(0, 0, 0, 0.9); /* More opaque for better contrast */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Reduced gap */
+    position: relative;
+    z-index: 10;
+    border-top: 2px solid #333; /* Add separator line */
+    border-radius: 15px;
+}
+
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    max-width: 600px;
+}
+
+.key {
+    width: 45px; /* Slightly smaller */
+    height: 45px; /* Slightly smaller */
+    background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+    border: 2px solid #555;
+    border-radius: 6px; /* Smaller radius */
+    color: white;
+    font-family: 'Orbitron', 'Press Start 2P', cursive;
+    font-size: 0.8rem; /* Smaller font */
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.key:hover {
+    background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+    transform: translateY(-2px);
+}
+
+.key.correct {
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    border-color: #27ae60;
+    animation: correctPulse 0.5s ease;
+}
+
+.key.wrong-position {
+    background: linear-gradient(145deg, #f39c12, #e67e22);
+    border-color: #f39c12;
+    animation: wrongPositionPulse 0.5s ease;
+}
+
+.key.incorrect {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    border-color: #e74c3c;
+    animation: incorrectShake 0.5s ease;
+}
+
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes wrongPositionPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes incorrectShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Result Screens */
+.result-container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 50px;
+    border-radius: 20px;
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.7);
+}
+
+.result-title {
+    font-family: 'Bungee', 'Orbitron', cursive;
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: 
+        3px 3px 0px #000,
+        0 0 20px currentColor;
+    letter-spacing: 2px;
+}
+
+#successScreen .result-title {
+    color: #27ae60;
+}
+
+#failureScreen .result-title {
+    color: #e74c3c;
+}
+
+.success-animation, .failure-animation {
+    font-size: 3rem;
+    margin: 20px 0;
+    animation: bounce 1s ease-in-out infinite;
+}
+
+.result-container p {
+    font-family: 'Audiowide', 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 20px 0;
+    color: #ccc;
+    text-shadow: 1px 1px 2px #000;
+}
+
+/* Three.js Canvas */
+#gameCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Show behind UI but above background */
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Responsive Design */
+
+/* Extra Small Devices (iPhone SE, Galaxy S5 - 320px to 374px) */
+@media (max-width: 374px) {
+    .start-container {
+        padding: 20px 15px;
+        margin: 5px;
+        width: calc(100vw - 10px);
+    }
+    
+    .game-title {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .start-btn {
+        font-size: 1.3rem;
+        padding: 10px 18px;
+    }
+    
+    .game-container {
+        padding: 5px;
+        height: 100vh;
+        overflow-y: auto;
+    }
+    
+    .hud {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        flex-shrink: 0;
+    }
+    
+    .vault-area {
+        flex: 1;
+        min-height: 200px;
+        padding: 5px;
+        gap: 10px;
+    }
+    
+    .vault-display {
+        width: 250px;
+        height: 45px;
+        top: 45px;
+        font-size: 0.7rem;
+        padding: 8px;
+    }
+    
+    .letter-slot {
+        width: 25px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .word-input {
+        gap: 4px;
+    }
+    
+    .sound-btn {
+        top: 50px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .keyboard-container {
+        padding: 8px !important;
+        margin-top: auto !important;
+        background: rgba(0, 0, 0, 0.95) !important;
+        border-radius: 10px 10px 0 0 !important;
+        position: sticky !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .keyboard {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 4px !important;
+        max-width: 280px !important;
+        margin: 0 auto 8px auto !important;
+    }
+    
+    .key {
+        width: 45px !important;
+        height: 35px !important;
+        font-size: 0.65rem !important;
+        padding: 5px 0 !important;
+        min-height: 35px !important;
+        min-width: 45px !important;
+    }
+    
+    .button-row {
+        gap: 6px !important;
+        margin: 8px 0 0 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    
+    .submit-btn, .clear-btn {
+        padding: 8px 12px !important;
+        font-size: 0.7rem !important;
+        margin: 0 !important;
+        width: 45% !important;
+        min-height: 35px !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Small Devices (iPhone 6/7/8, Galaxy S6/S7 - 375px to 413px) */
+@media (min-width: 375px) and (max-width: 413px) {
+    .start-container {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+    
+    .game-title {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .start-btn {
+        font-size: 1.5rem;
+        padding: 12px 22px;
+    }
+    
+    .game-container {
+        padding: 8px;
+        height: 100vh;
+    }
+    
+    .hud {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    
+    .vault-area {
+        flex: 1;
+        padding: 8px;
+        gap: 15px;
+    }
+    
+    .vault-display {
+        width: 300px;
+        height: 50px;
+        top: 50px;
+        font-size: 0.75rem;
+        padding: 10px;
+    }
+    
+    .letter-slot {
+        width: 28px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .word-input {
+        gap: 6px;
+    }
+    
+    .sound-btn {
+        top: 60px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .keyboard-container {
+        padding: 10px;
+        margin-top: auto;
+    }
+    
+    .keyboard {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 5px;
+        max-width: 330px;
+        margin-bottom: 10px;
+    }
+    
+    .key {
+        width: 42px;
+        height: 38px;
+        font-size: 0.7rem;
+        padding: 8px 0;
+    }
+    
+    .button-row {
+        gap: 8px;
+        margin-top: 10px;
+    }
+    
+    .submit-btn, .clear-btn {
+        padding: 10px 16px;
+        font-size: 0.75rem;
+        margin: 0;
+        width: 47%;
+    }
+}
+
+/* Medium Small Devices (iPhone 6/7/8 Plus, Galaxy S8 - 414px to 767px) */
+@media (min-width: 414px) and (max-width: 767px) {
+    .start-container {
+        padding: 45px 30px;
+        margin: 20px;
+    }
+    
+    .game-title {
+        font-size: 3.5rem;
+        margin-bottom: 30px;
+    }
+    
+    .start-btn {
+        font-size: 1.8rem;
+        padding: 14px 28px;
+    }
+    
+    .hud {
+        padding: 12px 20px;
+        font-size: 1.2rem;
+    }
+    
+    .vault-display {
+        width: 340px;
+        height: 62px;
+        top: 68px;
+    }
+    
+    .letter-slot {
+        width: 36px;
+        height: 40px;
+        font-size: 1.15rem;
+    }
+    
+    .word-input {
+        gap: 9px;
+    }
+    
+    .sound-btn {
+        top: 85px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
+    }
+    
+    .keyboard {
+        grid-template-columns: repeat(8, 1fr);
+        gap: 8px;
+        max-width: 400px;
+    }
+    
+    .key {
+        width: 44px;
+        height: 44px;
+        font-size: 0.8rem;
+        padding: 12px 0;
+    }
+    
+    .submit-btn, .clear-btn {
+        padding: 12px 20px;
+        font-size: 0.8rem;
+        margin: 0 8px;
+    }
+}
+
+/* Tablets and Large Phones (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .game-title {
+        font-size: 4rem;
+    }
+    
+    .vault-display {
+        width: 360px;
+        height: 65px;
+        top: 70px;
+    }
+    
+    .keyboard {
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 500px;
+    }
+    
+    .key {
+        width: 45px;
+        height: 45px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Landscape orientation adjustments for phones */
+@media (max-height: 500px) and (orientation: landscape) {
+    .start-container {
+        padding: 15px 25px;
+    }
+    
+    .game-title {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+    
+    .start-btn {
+        font-size: 1.2rem;
+        padding: 8px 18px;
+    }
+    
+    .game-container {
+        padding: 3px;
+        height: 100vh;
+    }
+    
+    .hud {
+        padding: 3px 10px;
+        font-size: 0.7rem;
+        margin-bottom: 3px;
+    }
+    
+    .vault-area {
+        flex: 1;
+        padding: 3px;
+        gap: 5px;
+        min-height: auto;
+    }
+    
+    .vault-display {
+        top: 30px;
+        height: 35px;
+        width: 250px;
+        font-size: 0.6rem;
+        padding: 5px;
+    }
+    
+    .letter-slot {
+        width: 22px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+    
+    .sound-btn {
+        top: 35px;
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .keyboard-container {
+        padding: 5px;
+        margin-top: auto;
+    }
+    
+    .keyboard {
+        grid-template-columns: repeat(8, 1fr);
+        gap: 3px;
+        max-width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .key {
+        width: 30px;
+        height: 28px;
+        font-size: 0.55rem;
+        padding: 4px 0;
+    }
+    
+    .button-row {
+        gap: 5px;
+        margin-top: 5px;
+    }
+    
+    .submit-btn, .clear-btn {
+        padding: 6px 12px;
+        font-size: 0.6rem;
+        min-height: 28px;
+    }
+}
+
+/* Very small screens and iPhone SE specific fixes */
+@media (max-width: 320px) {
+    .keyboard {
+        grid-template-columns: repeat(5, 1fr) !important;
+        max-width: 290px !important;
+    }
+    
+    .key {
+        width: 50px !important;
+        height: 32px !important;
+        font-size: 0.6rem !important;
+    }
+    
+    .vault-display {
+        width: 240px !important;
+        font-size: 0.65rem !important;
+    }
+    
+    .letter-slot {
+        width: 23px !important;
+        height: 28px !important;
+    }
+}
