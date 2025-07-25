@@ -553,28 +553,19 @@ function playIntroVideo() {
         audioContext.resume();
     }
     
-    // Ensure video is unmuted and volume is set
-    video.muted = false;
-    video.volume = 0.8; // Set to 80% volume
+    // Ensure video is muted and volume is set to 0
+    video.muted = true;
+    video.volume = 0;
     
-    // Try to play the video with sound
+    // Try to play the video muted
     const playPromise = video.play();
     
     if (playPromise !== undefined) {
         playPromise.then(() => {
             // Video started playing successfully
-            console.log('Video playing with audio');
+            console.log('Video playing muted');
         }).catch(error => {
-            // Auto-play with sound was prevented, try muted fallback
-            console.log('Auto-play with sound prevented, trying muted:', error);
-            video.muted = true;
-            video.play().then(() => {
-                console.log('Video playing muted');
-                // Show message to user that they can unmute
-                showUnmuteMessage();
-            }).catch(err => {
-                console.log('Video failed to play:', err);
-            });
+            console.log('Video failed to play:', error);
         });
     }
     
@@ -593,18 +584,8 @@ function playIntroVideo() {
         }
     }, 5000);
     
-    // Allow user to skip video by clicking anywhere or unmute if muted
-    videoScreen.addEventListener('click', function(e) {
-        if (video.muted) {
-            // First click unmutes the video
-            video.muted = false;
-            video.volume = 0.8;
-            hideUnmuteMessage();
-        } else {
-            // Second click or if already unmuted, skip to game
-            startActualGame();
-        }
-    });
+    // Allow user to skip video by clicking anywhere
+    videoScreen.addEventListener('click', startActualGame);
     
     document.addEventListener('keydown', function skipVideo(e) {
         if (e.key === 'Enter' || e.key === ' ') {
