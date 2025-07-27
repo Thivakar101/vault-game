@@ -6,6 +6,20 @@ let attemptsLeft = 2;
 let gameWords = ['MONEY', 'STEAL', 'HEIST', 'VAULT', 'CRACK', 'GOLD', 'JEWEL', 'SAFE', 'THIEF', 'ALARM'];
 let currentWordIndex = 0;
 
+// Word hints for each game word
+const wordHints = {
+    'MONEY': 'Currency used to buy things',
+    'STEAL': 'To take something without permission',
+    'HEIST': 'A robbery, especially of a bank',
+    'VAULT': 'A secure room for storing valuables',
+    'CRACK': 'To break open or solve something',
+    'GOLD': 'Precious yellow metal',
+    'JEWEL': 'A precious stone or gem',
+    'SAFE': 'A secure container for valuables',
+    'THIEF': 'A person who steals things',
+    'ALARM': 'A warning signal or device'
+};
+
 // Audio context and sounds
 let audioContext;
 let sounds = {
@@ -16,11 +30,11 @@ let sounds = {
     background: null
 };
 
-// QWERTY keyboard layout
+// QWERTY keyboard layout - upside down triangle shape
 const qwertyKeys = [
-    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'], // 10 letters
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],       // 9 letters  
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'DEL']                // 7 letters
 ];
 
 // Initialize the game
@@ -490,15 +504,28 @@ function createKeyboard() {
     const keyboard = document.getElementById('keyboard');
     keyboard.innerHTML = '';
     
-    qwertyKeys.forEach(row => {
+    qwertyKeys.forEach((row, rowIndex) => {
+        // Create a row container for each keyboard row
+        const rowContainer = document.createElement('div');
+        rowContainer.className = `keyboard-row keyboard-row-${rowIndex + 1}`;
+        
         row.forEach(letter => {
             const key = document.createElement('button');
-            key.className = 'key';
-            key.textContent = letter;
-            key.dataset.letter = letter;
-            key.addEventListener('click', () => handleKeyPress(letter));
-            keyboard.appendChild(key);
+            if (letter === 'DEL') {
+                key.className = 'key del-key';
+                key.textContent = letter;
+                key.dataset.letter = letter;
+                key.addEventListener('click', () => backspaceInput());
+            } else {
+                key.className = 'key';
+                key.textContent = letter;
+                key.dataset.letter = letter;
+                key.addEventListener('click', () => handleKeyPress(letter));
+            }
+            rowContainer.appendChild(key);
         });
+        
+        keyboard.appendChild(rowContainer);
     });
 }
 
@@ -506,8 +533,19 @@ function setupEventListeners() {
     // Start button
     document.getElementById('startBtn').addEventListener('click', startGame);
     
-    // Sound button
-    document.getElementById('soundBtn').addEventListener('click', speakWord);
+    // Sound button with permanent single-use protection
+    document.getElementById('soundBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!soundButtonUsed) {
+            speakWord();
+        }
+    });
+    
+    // Hint button - can be used multiple times
+    document.getElementById('hintBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        showHint();
+    });
     
     // Submit button
     document.getElementById('submitBtn').addEventListener('click', submitGuess);
@@ -527,7 +565,7 @@ function setupEventListeners() {
         } else if (e.key === 'Enter') {
             submitGuess();
         } else if (e.key === 'Backspace') {
-            clearInput();
+            backspaceInput();
         }
     });
     
@@ -665,8 +703,27 @@ function animateCamera() {
     camera.lookAt(new THREE.Vector3(0, 5, 0)); // Fixed look target
 }
 
+// Add flag to track if sound button has been used
+let soundButtonUsed = false;
+
 function speakWord() {
     if ('speechSynthesis' in window) {
+        // Prevent any use if button has already been used
+        if (soundButtonUsed) {
+            return;
+        }
+        
+        // Mark button as permanently used
+        soundButtonUsed = true;
+        const soundBtn = document.getElementById('soundBtn');
+        
+        // Permanently disable button visually and functionally
+        soundBtn.style.opacity = '0.3';
+        soundBtn.style.pointerEvents = 'none';
+        soundBtn.disabled = true;
+        soundBtn.style.cursor = 'not-allowed';
+        soundBtn.title = 'Sound button can only be used once';
+        
         const utterance = new SpeechSynthesisUtterance(currentWord);
         utterance.rate = 0.7;
         utterance.pitch = 1.2;
@@ -677,10 +734,18 @@ function speakWord() {
             voice.name.includes('Microsoft') || voice.name.includes('Google')
         ) || speechSynthesis.getVoices()[0];
         
+        // Button stays permanently disabled - no re-enabling
+        utterance.onend = () => {
+            // Button remains disabled permanently
+        };
+        
+        utterance.onerror = () => {
+            // Button remains disabled permanently
+        };
+        
         speechSynthesis.speak(utterance);
         
         // Visual feedback
-        const soundBtn = document.getElementById('soundBtn');
         soundBtn.style.transform = 'scale(0.95)';
         setTimeout(() => {
             soundBtn.style.transform = 'scale(1)';
@@ -688,6 +753,153 @@ function speakWord() {
     } else {
         alert(`The word is: ${currentWord}`);
     }
+}
+
+function showHint() {
+    // Get the hint for the current word
+    const hint = wordHints[currentWord] || 'No hint available';
+    const letterCount = currentWord.length;
+    
+    // Show hint with letter count in a styled alert/modal
+    showHintModal(hint, letterCount);
+    
+    // Visual feedback
+    const hintBtn = document.getElementById('hintBtn');
+    hintBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        hintBtn.style.transform = 'scale(1)';
+    }, 200);
+}
+
+function showHintModal(hint, letterCount) {
+    // Create a modal overlay
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        font-family: 'Bangers', cursive;
+    `;
+    
+    // Create hint content with Family Guy theme
+    const hintContent = document.createElement('div');
+    hintContent.style.cssText = `
+        background: #f1c40f;
+        border: 5px solid #f39c12;
+        border-radius: 20px;
+        padding: 40px 50px;
+        text-align: center;
+        max-width: 500px;
+        margin: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        position: relative;
+    `;
+    
+    hintContent.innerHTML = `
+        <h2 style="
+            font-family: 'Bangers', cursive;
+            font-size: 4rem;
+            color: #e67e22;
+            text-shadow: 
+                -3px -3px 0 #fff,  
+                 3px -3px 0 #fff,
+                -3px  3px 0 #fff,
+                 3px  3px 0 #fff,
+                -3px -3px 2px #000,
+                 3px -3px 2px #000,
+                -3px  3px 2px #000,
+                 3px  3px 2px #000;
+            margin: 0 0 30px 0;
+        ">💡 HINT!</h2>
+        <p style="
+            color: #2c3e50;
+            font-size: 2rem;
+            margin: 0 0 20px 0;
+            font-weight: bold;
+            font-family: 'Bangers', cursive;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            line-height: 1.2;
+        ">${hint}</p>
+        <p style="
+            color: #e67e22;
+            font-size: 1.8rem;
+            margin: 0 0 30px 0;
+            font-weight: bold;
+            font-family: 'Bangers', cursive;
+            text-shadow: 
+                -2px -2px 0 #fff,  
+                 2px -2px 0 #fff,
+                -2px  2px 0 #fff,
+                 2px  2px 0 #fff,
+                -2px -2px 1px #000,
+                 2px -2px 1px #000,
+                -2px  2px 1px #000,
+                 2px  2px 1px #000;
+        ">📝 Word has ${letterCount} letters</p>
+        <button id="closeHintBtn" style="
+            background: #e74c3c;
+            border: 3px solid #c0392b;
+            color: white;
+            padding: 15px 30px;
+            font-size: 2rem;
+            font-family: 'Bangers', cursive;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            min-height: 44px;
+        ">GOT IT!</button>
+    `;
+    
+    modal.appendChild(hintContent);
+    document.body.appendChild(modal);
+    
+    // Add hover effect to button
+    const closeBtn = document.getElementById('closeHintBtn');
+    closeBtn.addEventListener('mouseenter', () => {
+        closeBtn.style.background = '#c0392b';
+        closeBtn.style.transform = 'translateY(-3px)';
+        closeBtn.style.boxShadow = '0 8px 15px rgba(0,0,0,0.3)';
+    });
+    
+    closeBtn.addEventListener('mouseleave', () => {
+        closeBtn.style.background = '#e74c3c';
+        closeBtn.style.transform = 'translateY(0px)';
+        closeBtn.style.boxShadow = '0 5px 10px rgba(0,0,0,0.2)';
+    });
+    
+    closeBtn.addEventListener('click', () => {
+        closeBtn.style.transform = 'translateY(1px)';
+        closeBtn.style.boxShadow = '0 3px 5px rgba(0,0,0,0.3)';
+        setTimeout(() => {
+            document.body.removeChild(modal);
+        }, 100);
+    });
+    
+    // Close on clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Close on Escape key
+    const closeOnEscape = (e) => {
+        if (e.key === 'Escape') {
+            document.removeEventListener('keydown', closeOnEscape);
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+        }
+    };
+    document.addEventListener('keydown', closeOnEscape);
 }
 
 function handleKeyPress(letter) {
@@ -711,6 +923,13 @@ function clearInput() {
     playerInput = '';
     updateWordInput();
     resetKeyboardColors();
+}
+
+function backspaceInput() {
+    if (playerInput.length > 0) {
+        playerInput = playerInput.slice(0, -1);
+        updateWordInput();
+    }
 }
 
 function updateWordInput() {
@@ -988,6 +1207,9 @@ function gameOver() {
                 backWall.material.color.set(0x2a2a2a);
             }
             
+            // Update the correct word display
+            document.getElementById('correctWordText').textContent = currentWord;
+            
             // Show failure screen
             document.getElementById('gameScreen').classList.add('hidden');
             document.getElementById('failureScreen').classList.remove('hidden');
@@ -1016,6 +1238,23 @@ function resetGame() {
     // Reset game state
     attemptsLeft = 2;
     playerInput = '';
+    
+    // Reset sound button for new game
+    soundButtonUsed = false;
+    const soundBtn = document.getElementById('soundBtn');
+    soundBtn.style.opacity = '1';
+    soundBtn.style.pointerEvents = 'auto';
+    soundBtn.disabled = false;
+    soundBtn.style.cursor = 'pointer';
+    soundBtn.title = 'Click to hear the word';
+    
+    // Reset hint button for new game
+    const hintBtn = document.getElementById('hintBtn');
+    hintBtn.style.opacity = '1';
+    hintBtn.style.pointerEvents = 'auto';
+    hintBtn.disabled = false;
+    hintBtn.style.cursor = 'pointer';
+    hintBtn.title = 'Click for a hint about the word';
     
     // Remove treasure and treasure light from scene (not vault3D)
     const objectsToRemove = [];

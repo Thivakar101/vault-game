@@ -34,6 +34,8 @@
             <div class="hud">
                 <div class="attempts">
                     Attempts Left: <span id="attemptsLeft">2</span>
+                    <button id="soundBtn" class="sound-btn">🔊</button>
+                    <button id="hintBtn" class="hint-btn">💡</button>
                 </div>
                 <div class="word-display">
                     Target Word: <span id="currentWord">?????</span>
@@ -49,7 +51,6 @@
                         </div>
                     </div>
                 </div>
-                <button id="soundBtn" class="sound-btn">🔊</button>
             </div>
 
             <div class="keyboard-container">
@@ -66,7 +67,7 @@
     <div id="successScreen" class="screen hidden">
         <div class="start-container">
             <img src="success-image.png" alt="Vault Cracked" class="success-image">
-            <h1 class="game-title">VAULT CRACKED!</h1>
+            <h1 class="game-title">VAULT HAS BEEN  CRACKED!</h1>
             <button id="playAgainBtn" class="start-btn">HEIST AGAIN</button>
         </div>
     </div>
@@ -76,6 +77,27 @@
         <div class="start-container">
             <img src="failure-image.png" alt="Caught" class="failure-image">
             <h1 class="game-title">CAUGHT!</h1>
+            <p id="correctWordDisplay" style="
+                font-family: 'Bangers', cursive;
+                font-size: 1.8rem;
+                color: #2c3e50;
+                margin: 20px 0;
+                text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+                font-weight: bold;
+            ">The correct word was: <span id="correctWordText" style="
+                color: #e67e22;
+                text-shadow: 
+                    -3px -3px 0 #fff,  
+                     3px -3px 0 #fff,
+                    -3px  3px 0 #fff,
+                     3px  3px 0 #fff,
+                    -3px -3px 2px #000,
+                     3px -3px 2px #000,
+                    -3px  3px 2px #000,
+                     3px  3px 2px #000;
+                font-size: 2.2rem;
+                font-weight: bold;
+            ">WORD</span></p>
             <button id="tryAgainBtn" class="start-btn">TRY AGAIN</button>
         </div>
     </div>
