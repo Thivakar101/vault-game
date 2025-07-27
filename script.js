@@ -34,7 +34,7 @@ let sounds = {
 const qwertyKeys = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'], // 10 letters
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],       // 9 letters  
-    ['Z', 'X', 'C', 'V', 'B', 'N', 'DEL']                // 7 letters
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'DEL']           // 8 letters
 ];
 
 // Initialize the game
@@ -533,12 +533,10 @@ function setupEventListeners() {
     // Start button
     document.getElementById('startBtn').addEventListener('click', startGame);
     
-    // Sound button with permanent single-use protection
+    // Sound button - can be used multiple times
     document.getElementById('soundBtn').addEventListener('click', function(e) {
         e.preventDefault();
-        if (!soundButtonUsed) {
-            speakWord();
-        }
+        speakWord();
     });
     
     // Hint button - can be used multiple times
@@ -703,26 +701,32 @@ function animateCamera() {
     camera.lookAt(new THREE.Vector3(0, 5, 0)); // Fixed look target
 }
 
-// Add flag to track if sound button has been used
-let soundButtonUsed = false;
+// Add flags to prevent audio spam
+let isCurrentlySpeaking = false;
+let soundDebounceTimeout = null;
 
 function speakWord() {
     if ('speechSynthesis' in window) {
-        // Prevent any use if button has already been used
-        if (soundButtonUsed) {
+        // If already speaking or recently triggered, ignore the call
+        if (isCurrentlySpeaking || soundDebounceTimeout) {
             return;
         }
         
-        // Mark button as permanently used
-        soundButtonUsed = true;
+        // Set debounce timeout to prevent rapid successive calls
+        soundDebounceTimeout = setTimeout(() => {
+            soundDebounceTimeout = null;
+        }, 300); // 300ms debounce period
+        
         const soundBtn = document.getElementById('soundBtn');
         
-        // Permanently disable button visually and functionally
-        soundBtn.style.opacity = '0.3';
-        soundBtn.style.pointerEvents = 'none';
-        soundBtn.disabled = true;
-        soundBtn.style.cursor = 'not-allowed';
-        soundBtn.title = 'Sound button can only be used once';
+        // Visual feedback for button press
+        soundBtn.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            soundBtn.style.transform = 'scale(1)';
+        }, 200);
+        
+        // Set flag to prevent overlapping speech
+        isCurrentlySpeaking = true;
         
         const utterance = new SpeechSynthesisUtterance(currentWord);
         utterance.rate = 0.7;
@@ -734,22 +738,16 @@ function speakWord() {
             voice.name.includes('Microsoft') || voice.name.includes('Google')
         ) || speechSynthesis.getVoices()[0];
         
-        // Button stays permanently disabled - no re-enabling
+        // Reset flag when speech ends
         utterance.onend = () => {
-            // Button remains disabled permanently
+            isCurrentlySpeaking = false;
         };
         
         utterance.onerror = () => {
-            // Button remains disabled permanently
+            isCurrentlySpeaking = false;
         };
         
         speechSynthesis.speak(utterance);
-        
-        // Visual feedback
-        soundBtn.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            soundBtn.style.transform = 'scale(1)';
-        }, 200);
     } else {
         alert(`The word is: ${currentWord}`);
     }
@@ -1239,8 +1237,15 @@ function resetGame() {
     attemptsLeft = 2;
     playerInput = '';
     
-    // Reset sound button for new game
-    soundButtonUsed = false;
+    // Reset speech flags and clear any pending timeouts
+    isCurrentlySpeaking = false;
+    if (soundDebounceTimeout) {
+        clearTimeout(soundDebounceTimeout);
+        soundDebounceTimeout = null;
+    }
+    speechSynthesis.cancel(); // Cancel any ongoing speech
+    
+    // Sound button is always available - no reset needed
     const soundBtn = document.getElementById('soundBtn');
     soundBtn.style.opacity = '1';
     soundBtn.style.pointerEvents = 'auto';
