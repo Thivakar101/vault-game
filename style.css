@@ -289,6 +289,56 @@ body {
     text-shadow: 0 0 10px #00ff00;
 }
 
+/* Attempts Display Styling */
+.attempts-display {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+.attempt-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.attempt-container.hidden {
+    display: none;
+}
+
+.attempt-label {
+    font-family: 'Orbitron', 'Courier New', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #00ff00;
+    text-shadow: 0 0 8px #00ff00;
+    text-align: center;
+    margin-bottom: 3px;
+    display: none; /* Hide the attempt labels */
+}
+
+.attempt-input {
+    display: flex;
+    gap: 8px;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.attempt-input.active {
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+.attempt-input.completed {
+    opacity: 0.8;
+    box-shadow: 0 0 8px rgba(255, 165, 0, 0.4);
+}
+
 .sound-btn {
     position: relative;
     background: #e74c3c;
@@ -341,6 +391,36 @@ body {
     transform: none !important;
     background: #f39c12 !important;
     box-shadow: 0 3px 6px rgba(0,0,0,0.2) !important;
+}
+
+.how-to-play-btn {
+    background: #9b59b6;
+    border: 3px solid #8e44ad;
+    color: white;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-family: 'Bangers', cursive;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 35px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.how-to-play-btn:hover {
+    background: #8e44ad;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+}
+
+.how-to-play-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
 
 .keyboard-container {
@@ -619,7 +699,7 @@ body {
 
 .vault-display {
     width: 360px; /* Match the vault door width better */
-    height: 65px; 
+    height: 100px; /* Start with expanded height to prevent jumping */
     background: rgba(0, 0, 0, 0.95);
     border: 3px solid #00ff00;
     border-radius: 8px;
@@ -632,7 +712,7 @@ body {
     color: #00ff00;
     text-shadow: 0 0 15px #00ff00;
     position: fixed; /* Changed to fixed for precise positioning */
-    top: 140px; /* Increased from 120px to give more space on mobile */
+    top: 100px; /* Fixed position to prevent jumping */
     left: 50%;
     transform: translateX(-50%);
     z-index: 20; /* Even higher z-index */
@@ -659,6 +739,35 @@ body {
     border-radius: 5px;
     text-shadow: 0 0 8px #00ff00;
     box-shadow: 0 0 8px rgba(0, 255, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Letter slot color feedback */
+.letter-slot.correct {
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    border-color: #27ae60;
+    color: white;
+    text-shadow: 1px 1px 2px #000;
+    box-shadow: 0 0 15px rgba(39, 174, 96, 0.6);
+    animation: correctPulse 0.5s ease;
+}
+
+.letter-slot.wrong-position {
+    background: linear-gradient(145deg, #f39c12, #e67e22);
+    border-color: #f39c12;
+    color: white;
+    text-shadow: 1px 1px 2px #000;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.6);
+    animation: wrongPositionPulse 0.5s ease;
+}
+
+.letter-slot.incorrect {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    border-color: #e74c3c;
+    color: white;
+    text-shadow: 1px 1px 2px #000;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
+    animation: incorrectShake 0.5s ease;
 }
 
 .sound-btn:hover {
@@ -884,8 +993,8 @@ body {
     
     .vault-display {
         width: 250px;
-        height: 45px;
-        top: 55px;
+        height: 70px;
+        top: 45px;
         font-size: 0.7rem;
         padding: 8px;
     }
@@ -897,6 +1006,18 @@ body {
     }
     
     .word-input {
+        gap: 4px;
+    }
+    
+    .attempts-display {
+        gap: 8px;
+    }
+    
+    .attempt-label {
+        font-size: 0.6rem;
+    }
+    
+    .attempt-input {
         gap: 4px;
     }
     
@@ -1031,8 +1152,8 @@ body {
     
     .vault-display {
         width: 300px;
-        height: 50px;
-        top: 60px;
+        height: 80px;
+        top: 50px;
         font-size: 0.75rem;
         padding: 10px;
     }
@@ -1044,6 +1165,18 @@ body {
     }
     
     .word-input {
+        gap: 6px;
+    }
+    
+    .attempts-display {
+        gap: 10px;
+    }
+    
+    .attempt-label {
+        font-size: 0.7rem;
+    }
+    
+    .attempt-input {
         gap: 6px;
     }
     
@@ -1153,8 +1286,8 @@ body {
     
     .vault-display {
         width: 340px;
-        height: 62px;
-        top: 75px;
+        height: 95px;
+        top: 65px;
     }
     
     .letter-slot {
@@ -1164,6 +1297,18 @@ body {
     }
     
     .word-input {
+        gap: 9px;
+    }
+    
+    .attempts-display {
+        gap: 12px;
+    }
+    
+    .attempt-label {
+        font-size: 0.8rem;
+    }
+    
+    .attempt-input {
         gap: 9px;
     }
     

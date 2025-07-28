@@ -3,6 +3,9 @@ let scene, camera, renderer, vault3D, spotLight, vaultDoor, alarmLight, leftWall
 let currentWord = '';
 let playerInput = '';
 let attemptsLeft = 2;
+let currentAttempt = 1;
+let attempt1Word = '';
+let attempt2Word = '';
 let gameWords = ['MONEY', 'STEAL', 'HEIST', 'VAULT', 'CRACK', 'GOLD', 'JEWEL', 'SAFE', 'THIEF', 'ALARM'];
 let currentWordIndex = 0;
 
@@ -489,15 +492,22 @@ function animate() {
 
 function initUI() {
     selectRandomWord();
-    updateWordDisplay();
     updateAttemptsDisplay();
+    updateAttemptDisplay(1);
+    updateAttemptDisplay(2);
+    
+    // Set first attempt as active and hide second attempt initially
+    document.getElementById('attempt1Input').classList.add('active');
+    document.querySelector('#attempt2Input').parentElement.classList.add('hidden');
 }
 
 function selectRandomWord() {
     currentWordIndex = Math.floor(Math.random() * gameWords.length);
     currentWord = gameWords[currentWordIndex];
     playerInput = '';
-    updateWordInput();
+    currentAttempt = 1;
+    attempt1Word = '';
+    attempt2Word = '';
 }
 
 function createKeyboard() {
@@ -545,9 +555,15 @@ function setupEventListeners() {
         showHint();
     });
     
+    // How to Play button
+    document.getElementById('howToPlayBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        showHowToPlay();
+    });
+    
     // Submit button
     document.getElementById('submitBtn').addEventListener('click', submitGuess);
-    
+    ALARM
     // Clear button
     document.getElementById('clearBtn').addEventListener('click', clearInput);
     
@@ -555,14 +571,22 @@ function setupEventListeners() {
     document.getElementById('playAgainBtn').addEventListener('click', resetGame);
     document.getElementById('tryAgainBtn').addEventListener('click', resetGame);
     
-    // Keyboard input
+    // Keyboard input - only works when game screen is active
     document.addEventListener('keydown', (e) => {
+        // Only handle keyboard input if game screen is visible
+        if (document.getElementById('gameScreen').classList.contains('hidden')) {
+            return;
+        }
+        
         const letter = e.key.toUpperCase();
         if (letter.match(/[A-Z]/) && letter.length === 1) {
+            e.preventDefault();
             handleKeyPress(letter);
         } else if (e.key === 'Enter') {
+            e.preventDefault();
             submitGuess();
         } else if (e.key === 'Backspace') {
+            e.preventDefault();
             backspaceInput();
         }
     });
@@ -900,6 +924,224 @@ function showHintModal(hint, letterCount) {
     document.addEventListener('keydown', closeOnEscape);
 }
 
+function showHowToPlay() {
+    // Create a modal overlay
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        font-family: 'Bangers', cursive;
+    `;
+    
+    // Create how to play content
+    const howToPlayContent = document.createElement('div');
+    howToPlayContent.style.cssText = `
+        background: #f1c40f;
+        border: 5px solid #f39c12;
+        border-radius: 20px;
+        padding: 40px 50px;
+        text-align: center;
+        max-width: 600px;
+        margin: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        position: relative;
+        max-height: 80vh;
+        overflow-y: auto;
+    `;
+    
+    howToPlayContent.innerHTML = `
+        <h2 style="
+            font-family: 'Bangers', cursive;
+            font-size: 4rem;
+            color: #e67e22;
+            text-shadow: 
+                -3px -3px 0 #fff,  
+                 3px -3px 0 #fff,
+                -3px  3px 0 #fff,
+                 3px  3px 0 #fff,
+                -3px -3px 2px #000,
+                 3px -3px 2px #000,
+                -3px  3px 2px #000,
+                 3px  3px 2px #000;
+            margin: 0 0 30px 0;
+        ">❓ HOW TO PLAY</h2>
+        
+        <div style="text-align: left; margin: 20px 0;">
+            <div style="
+                display: flex;
+                align-items: center;
+                margin: 15px 0;
+                padding: 10px;
+                background: rgba(39, 174, 96, 0.2);
+                border-radius: 10px;
+                border-left: 5px solid #27ae60;
+            ">
+                <div style="
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(145deg, #27ae60, #2ecc71);
+                    border: 2px solid #27ae60;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    margin-right: 15px;
+                ">A</div>
+                <span style="
+                    color: #2c3e50;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    font-family: 'Bangers', cursive;
+                ">Letter is correct and in the right position</span>
+            </div>
+            
+            <div style="
+                display: flex;
+                align-items: center;
+                margin: 15px 0;
+                padding: 10px;
+                background: rgba(243, 156, 18, 0.2);
+                border-radius: 10px;
+                border-left: 5px solid #f39c12;
+            ">
+                <div style="
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(145deg, #f39c12, #e67e22);
+                    border: 2px solid #f39c12;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    margin-right: 15px;
+                ">B</div>
+                <span style="
+                    color: #2c3e50;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    font-family: 'Bangers', cursive;
+                ">Letter is in the word but in the wrong position</span>
+            </div>
+            
+            <div style="
+                display: flex;
+                align-items: center;
+                margin: 15px 0;
+                padding: 10px;
+                background: rgba(231, 76, 60, 0.2);
+                border-radius: 10px;
+                border-left: 5px solid #e74c3c;
+            ">
+                <div style="
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(145deg, #e74c3c, #c0392b);
+                    border: 2px solid #e74c3c;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    margin-right: 15px;
+                ">C</div>
+                <span style="
+                    color: #2c3e50;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    font-family: 'Bangers', cursive;
+                ">Letter is not in the word</span>
+            </div>
+        </div>
+        
+        <p style="
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin: 20px 0;
+            font-weight: bold;
+            font-family: 'Bangers', cursive;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            line-height: 1.3;
+        ">You have 2 attempts to guess the word.<br>Use the hint (💡) and sound (🔊) to help you!</p>
+        
+        <button id="closeHowToPlayBtn" style="
+            background: #9b59b6;
+            border: 3px solid #8e44ad;
+            color: white;
+            padding: 15px 30px;
+            font-size: 2rem;
+            font-family: 'Bangers', cursive;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            min-height: 44px;
+        ">GOT IT!</button>
+    `;
+    
+    modal.appendChild(howToPlayContent);
+    document.body.appendChild(modal);
+    
+    // Add hover effect to button
+    const closeBtn = document.getElementById('closeHowToPlayBtn');
+    closeBtn.addEventListener('mouseenter', () => {
+        closeBtn.style.background = '#8e44ad';
+        closeBtn.style.transform = 'translateY(-3px)';
+        closeBtn.style.boxShadow = '0 8px 15px rgba(0,0,0,0.3)';
+    });
+    
+    closeBtn.addEventListener('mouseleave', () => {
+        closeBtn.style.background = '#9b59b6';
+        closeBtn.style.transform = 'translateY(0px)';
+        closeBtn.style.boxShadow = '0 5px 10px rgba(0,0,0,0.2)';
+    });
+    
+    closeBtn.addEventListener('click', () => {
+        closeBtn.style.transform = 'translateY(1px)';
+        closeBtn.style.boxShadow = '0 3px 5px rgba(0,0,0,0.3)';
+        setTimeout(() => {
+            document.body.removeChild(modal);
+        }, 100);
+    });
+    
+    // Close on clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Close on Escape key
+    const closeOnEscape = (e) => {
+        if (e.key === 'Escape') {
+            document.removeEventListener('keydown', closeOnEscape);
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+        }
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    
+    // Visual feedback for how to play button
+    const howToPlayBtn = document.getElementById('howToPlayBtn');
+    howToPlayBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        howToPlayBtn.style.transform = 'scale(1)';
+    }, 200);
+}
+
 function handleKeyPress(letter) {
     if (playerInput.length < currentWord.length) {
         playerInput += letter;
@@ -917,10 +1159,13 @@ function handleKeyPress(letter) {
     }
 }
 
-function clearInput() {
+function clearInput(resetColors = true) {
     playerInput = '';
     updateWordInput();
-    resetKeyboardColors();
+    if (resetColors) {
+        resetKeyboardColors();
+        resetInputBoxColors();
+    }
 }
 
 function backspaceInput() {
@@ -931,14 +1176,27 @@ function backspaceInput() {
 }
 
 function updateWordInput() {
-    const wordInputDiv = document.getElementById('wordInput');
-    wordInputDiv.innerHTML = '';
+    if (currentAttempt === 1) {
+        attempt1Word = playerInput;
+        updateAttemptDisplay(1);
+    } else {
+        attempt2Word = playerInput;
+        updateAttemptDisplay(2);
+    }
+}
+
+function updateAttemptDisplay(attemptNumber) {
+    const container = document.getElementById(`attempt${attemptNumber}Input`);
+    container.innerHTML = '';
     
+    const wordToShow = attemptNumber === 1 ? attempt1Word : attempt2Word;
+    
+    // Create letter slots for current word length
     for (let i = 0; i < currentWord.length; i++) {
-        const letterSlot = document.createElement('div');
-        letterSlot.className = 'letter-slot';
-        letterSlot.textContent = playerInput[i] || '';
-        wordInputDiv.appendChild(letterSlot);
+        const slot = document.createElement('div');
+        slot.className = 'letter-slot';
+        slot.textContent = wordToShow[i] || '';
+        container.appendChild(slot);
     }
 }
 
@@ -956,8 +1214,13 @@ function submitGuess() {
         return;
     }
     
+    // Mark current attempt as completed
+    document.getElementById(`attempt${currentAttempt}Input`).classList.remove('active');
+    document.getElementById(`attempt${currentAttempt}Input`).classList.add('completed');
+    
     const result = checkWord(playerInput, currentWord);
     updateKeyboardColors(result);
+    updateInputBoxColors(result, currentAttempt);
     
     if (playerInput === currentWord) {
         // Success!
@@ -970,10 +1233,20 @@ function submitGuess() {
             // Game over
             gameOver();
         } else {
-            // Try again
+            // Move to next attempt
+            currentAttempt = 2;
+            playerInput = '';
+            
+            // Show second attempt container
+            document.querySelector('#attempt2Input').parentElement.classList.remove('hidden');
+            
+            // Activate second attempt input
+            document.getElementById('attempt2Input').classList.add('active');
+            
             shakeVault();
+            // Clear input but preserve keyboard colors
             setTimeout(() => {
-                clearInput();
+                clearInput(false); // Don't reset keyboard colors
             }, 1000);
         }
     }
@@ -1020,6 +1293,27 @@ function updateKeyboardColors(result) {
             key.classList.add(result[i]);
         }
     }
+}
+
+function updateInputBoxColors(result, attemptNumber) {
+    const inputBox = document.getElementById(`attempt${attemptNumber}Input`);
+    const letterSlots = inputBox.querySelectorAll('.letter-slot');
+    
+    for (let i = 0; i < result.length; i++) {
+        const slot = letterSlots[i];
+        if (slot) {
+            // Remove any existing color classes
+            slot.classList.remove('correct', 'wrong-position', 'incorrect');
+            // Add the new color class based on result
+            slot.classList.add(result[i]);
+        }
+    }
+}
+
+function resetInputBoxColors() {
+    document.querySelectorAll('.letter-slot').forEach(slot => {
+        slot.classList.remove('correct', 'wrong-position', 'incorrect');
+    });
 }
 
 function resetKeyboardColors() {
@@ -1312,9 +1606,21 @@ function resetGame() {
     
     // Select new word
     selectRandomWord();
-    updateWordDisplay();
     updateAttemptsDisplay();
     resetKeyboardColors();
+    resetInputBoxColors();
+    
+    // Reset attempt displays
+    document.getElementById('attempt1Input').classList.remove('completed');
+    document.getElementById('attempt2Input').classList.remove('completed', 'active');
+    document.getElementById('attempt1Input').classList.add('active');
+    
+    // Hide second attempt container
+    document.querySelector('#attempt2Input').parentElement.classList.add('hidden');
+    
+    // Update displays
+    updateAttemptDisplay(1);
+    updateAttemptDisplay(2);
     
     // Reset camera to fixed position
     camera.position.set(0, 8, 18); // Better positioning
